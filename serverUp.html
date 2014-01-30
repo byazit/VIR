@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+	<head>
+    <meta name = "viewport" content = "initial-scale = 1, user-scalable = no">
+		<title>Radar Chart</title>
+    <script src="Chart.js"></script>
+		<script>
+
+			var pieData;
+			var myPie;
+			var free = 40;
+			var used = 40;
+
+		if(typeof(EventSource)!=="undefined")
+		{
+			var source=new EventSource("demo_sse.php");
+			source.onmessage=function(event)
+				{
+					// must have float sent to grapth
+					updatePie(100,parseFloat(event.data));
+//					updateChart(1,parseFloat(event.data));
+
+					// print the rtesult as text in result div
+					document.getElementById("result").innerHTML+='[' + event.data + ']' + "<br>";
+
+				};
+		}
+		else
+		{
+			document.getElementById("result").innerHTML="Sorry, your browser does not support server-sent events...";
+		}
+
+		
+			function updatePie(new_free,new_used)
+			{
+				free = new_free;
+				used = new_used;
+
+				pieData = [
+				{
+					value : used,
+					color : "#FF0000"
+				},
+				{
+					value : free,
+					color : "#69D2E7"
+				}];
+				
+
+				myPie = new Chart(document.getElementById("canvas").getContext("2d")).Pie(pieData);
+			}
+
+
+			window.onload = function ()
+			{
+
+				pieData = [
+				{
+					value : used,
+					color : "#FF0000"
+				},
+				{
+					value : free,
+					color : "#69D2E7"
+				}];
+
+//				myPie = new Chart(document.getElementById("canvas").getContext("2d")).Pie(pieData);
+
+
+			updatePie(used,free);				
+			
+
+
+			}
+
+			
+
+</script>
+
+	</head>
+	<body>
+                <canvas id="canvas" height="450" width="450"></canvas>							
+	</body>
+</html>
